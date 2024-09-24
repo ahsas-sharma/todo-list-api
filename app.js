@@ -1,5 +1,5 @@
 import express from "express";
-import { connectToMongoDb } from "./config/database.js";
+import connectToMongoDb from "./config/database.js";
 import userRoutes from "./routes/userRoutes.js";
 const app = express();
 
@@ -12,8 +12,11 @@ app.get("/api", (req, res) => {
   res.send("Hello World!");
 });
 
-// TODO: add routes
+// User Routes
 app.use("/api/users", userRoutes);
+
+// TODO: Todos Routes
+// app.use("/api/todos", todosRoutes);
 
 // Fallback
 app.use("*", (req, res) => {
