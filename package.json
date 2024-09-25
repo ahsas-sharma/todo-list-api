@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "jest",
-    "dev": "nodemon --inspect ./server.js"
+    "dev": "nodemon --inspect ./src/server.js"
   },
   "keywords": [],
   "author": "",
