@@ -1,12 +1,23 @@
 import express from "express";
+import rateLimit from "express-rate-limit";
 import connectToMongoDb from "./config/database.js";
 import userRoutes from "./routes/userRoutes.js";
 import todoRoutes from "./routes/todoRoutes.js";
-const app = express();
 
+const app = express();
 app.use(express.json());
 
 connectToMongoDb();
+
+const rateLimitMiddleware = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: "Request quota exceeded. Please try again later.",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use(rateLimitMiddleware);
 
 // User Routes
 app.use("/api/users", userRoutes);
