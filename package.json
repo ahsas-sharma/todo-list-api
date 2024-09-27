@@ -4,7 +4,6 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "test": "jest",
     "dev": "nodemon ./src/server.js"
   },
   "keywords": [],
@@ -22,9 +21,5 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.3",
     "nodemon": "^3.1.7"
-  },
-  "devDependencies": {
-    "jest": "^29.7.0",
-    "supertest": "^7.0.0"
   }
 }

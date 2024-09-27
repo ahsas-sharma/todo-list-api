@@ -9,13 +9,13 @@ export async function generateAccessAndRefreshTokens(userId) {
       { userId: userId },
       CONFIG.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: "1m",
+        expiresIn: "15m",
       }
     );
     const refreshToken = jwt.sign(
       { userId: userId },
       CONFIG.REFRESH_TOKEN_SECRET,
-      { expiresIn: "3m" }
+      { expiresIn: "7d" }
     );
     user.refreshToken = refreshToken;
     // store refresh token in the user document
