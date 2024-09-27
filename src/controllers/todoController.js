@@ -1,4 +1,3 @@
-import { query } from "express";
 import Todo from "../models/todoModel.js";
 
 export const createTodo = async (req, res) => {

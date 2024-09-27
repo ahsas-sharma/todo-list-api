@@ -1,13 +1,15 @@
-import express from "express";
+import express, { urlencoded } from "express";
 import rateLimit from "express-rate-limit";
+import cookieParser from "cookie-parser";
 import connectToMongoDb from "./config/database.js";
 import userRoutes from "./routes/userRoutes.js";
 import todoRoutes from "./routes/todoRoutes.js";
 
+connectToMongoDb();
+
 const app = express();
 app.use(express.json());
-
-connectToMongoDb();
+app.use(cookieParser());
 
 const rateLimitMiddleware = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -29,4 +31,5 @@ app.use("/api/todos", todoRoutes);
 app.use("*", (req, res) => {
   res.status(404).json({ message: "Route does not exist" });
 });
+
 export default app;

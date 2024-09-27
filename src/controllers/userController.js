@@ -1,6 +1,6 @@
 import User from "../models/userModel.js";
-import bcrypt from "bcrypt";
-import { generateToken } from "../utils/generateToken.js";
+import { generateAccessAndRefreshTokens } from "../middleware/auth.js";
+
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find();
@@ -15,12 +15,12 @@ export const getAllUsers = async (req, res) => {
 };
 
 export const signUpUser = async (req, res) => {
-  const user = req.body;
-  user.password = await bcrypt.hash(user.password, 5);
-  const newUser = new User(user);
   try {
-    await newUser.save();
-    res.status(201).json(newUser);
+    let newUser = await User.create(req.body);
+    const createdUser = await User.findById(newUser._id).select(
+      "-password -refreshToken"
+    );
+    res.status(201).json(createdUser);
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
@@ -29,23 +29,32 @@ export const signUpUser = async (req, res) => {
 export const signInUser = async (req, res) => {
   const { email, password } = req.body;
   try {
-    let userData = await User.findOne({ email: email });
-    if (!userData) {
+    let user = await User.findOne({ email: email });
+    if (!user) {
       return res.status(401).json({ message: "Invalid Credentials" });
     }
-    let matchPassword = await bcrypt.compare(password, userData.password);
+    let isPasswordValid = await user.isPasswordCorrect(password);
 
-    if (!matchPassword) {
+    if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid Credentials" });
     }
 
-    let payload = {
-      userId: userData._id,
-    };
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+      user._id.toString()
+    );
 
-    const token = generateToken(payload);
-    return res.status(200).json({ token: token });
+    return res
+      .cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        sameSite: "strict",
+        secure: true,
+      })
+      .header("Authorization", accessToken)
+      .status(200)
+      .json({ token: accessToken });
   } catch (error) {
+    console.log(`Caught error ${error.stack}`);
+
     res.status(500).json({ message: error.message });
   }
 };

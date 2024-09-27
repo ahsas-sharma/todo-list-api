@@ -4,6 +4,7 @@ const CONFIG = {
   PORT: process.env.PORT || 3000,
   MONGO_URL: process.env.MONGO_URL,
   NODE_ENV: process.env.NODE_ENV,
-  JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
+  ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
+  REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
 };
 export default CONFIG;
